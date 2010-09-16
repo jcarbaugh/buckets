@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block bodyclass %}buckets{% endblock %}
+
+{% block content %}
+	<div id="browser">
+		<nav id="ls">
+			<ol id="directories">
+				{% for b in buckets %}
+					<li class="directory" data-bucket="{{ b }}" data-keyprefix="/">
+						<a href="{% url s3_bucket b %}" class="name">{{ b }}</a>
+					</li>
+				{% endfor %}
+			</ol>
+		</nav>
+	</div>
+{% endblock %}

@@ -1,0 +1,140 @@
+body { margin: 20px 0; text-align: center; }
+.cleared:after {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
+
+hgroup h1 { margin-bottom: 0; }
+hgroup h2 { font-size: 100%; margin-bottom: 10px; }
+
+#container {
+    margin: 0 auto;
+    text-align: left;
+    width: 800px;
+}
+
+a { color: #346075; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+#hey { color: #999; float: right; margin-top: 10px; text-align: right; }
+#hey p { margin: 0; }
+#hey p.organization { color: #000000; font-weight: bold; }
+
+header nav {
+    background-color: #C2DCF8;
+    margin: 0 0 10px 0;
+    padding: 5px 10px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+}
+ol#pwd { list-style: none; margin: 0; }
+ol#pwd li { float: left; margin: 0; padding: 0 3px 0 0; }
+ol#pwd li.organization {
+    background: url(../images/icons/bullet_green.png) 2px right no-repeat;
+    font-weight: bold;
+    margin-right: 5px;
+    padding-right: 22px;
+}
+ol#pwd li.bucket a { color: #B96A13; }
+ol#pwd li.bucket:after,
+ol#pwd li.path:after { content: " /"; }
+
+#overlays { display: none; }
+
+#content { clear: both; width: 100%; }
+#browser { float: left; width: 400px; }
+body.buckets #browser { float: left; width: 800px; }
+
+#browser header {
+    border-bottom: 1px solid #AEB890;
+	margin-bottom: 5px;
+}
+#browser header h2 { font-size: 100%; margin: 0 0 5px 0; padding: 5px 0 0 0; }
+#browser header a.back {
+    background: url(../images/icons/arrow_left.png) 6px 6px no-repeat;
+	float: right;
+    padding: 5px 0 10px 30px;
+}
+
+#options { float: right; padding: 10px 0 0 10px; width: 360px; }
+#options select { width: 195px; }
+
+ul#uploads { list-style: none; margin: 0; padding: 0; }
+ul#uploads li {
+    background: #EEEEEE url(../images/ajax-loader.gif) 320px 5px no-repeat;
+    border: 1px solid #AEB890;
+    margin: 10px 0;
+    padding: 5px 10px 0;
+    position: relative;
+}
+ul#uploads li.done {
+	background: #F8FFF0 url(../images/icons/accept.png) 329px 13px no-repeat;
+    border: 1px solid #A0DC11;
+}
+ul#uploads li.error {
+	background: #F8C7D2 url(../images/icons/exclamation.png) 329px 13px no-repeat;
+    border: 1px solid #C34B32;
+}
+ul#uploads li h3 { font-size: 100%; margin: 0; }
+ul#uploads li p { color: #999; font-size: 86%; margin: 0 0 4px 0; }
+ul#uploads li progress { margin: 10px 0; width: 280px; }
+
+/* directory and file navigation */
+
+nav#ls ol { border: 1px solid transparent; margin: 0; }
+nav#ls ol li {
+    border: 1px solid transparent;
+    clear: both;
+    list-style: none;
+    margin: 0;
+    padding: 5px 0 5px 30px;
+}
+
+nav#ls ol li:hover { border: 1px solid #AEB890; }
+nav#ls ol li:hover a.actions { display: block; }
+nav#ls ol li a.actions {
+    background: url(../images/icons/rainbow.png) top left no-repeat;
+    display: none;
+    float: right;
+    margin: 2px 10px 0 0;
+    text-indent: -9999px;
+    height: 16px;
+    width: 16px;
+}
+
+/* directories */
+
+nav#ls ol#directories li { background: url(../images/icons/folder.png) 6px 6px no-repeat; }
+nav#ls ol#directories li.hovered { background-color: #DDD; border: 1px solid #AEB890; }
+nav#ls ol#directories li.new-directory {
+	background: #FFFFFF;
+	color: #DDDDDD;
+	padding: 5px 0;
+	text-align: center;
+}
+nav#ls ol#directories li.new-directory:hover { border: 1px solid transparent; }
+/* files */
+
+nav#ls ol#files.hovered { background-color: #DDD; border: 1px solid #AEB890; }
+nav#ls ol#files li { background: url(../images/icons/page_white.png) 6px 6px no-repeat; }
+nav#ls ol#files li.no-files {
+	background: #FFFFFF;
+	color: #DDDDDD;
+	padding: 5px 0;
+	text-align: center;
+}
+nav#ls ol#files li.no-files:hover { border: 1px solid transparent; }
+
+nav#ls ol#files li.text-html { background-image: url(../images/icons/page.png); }
+nav#ls ol#files li.text-plain { background-image: url(../images/icons/page.png); }
+
+nav#ls ol#files li.image-gif { background-image: url(../images/icons/image.png); }
+nav#ls ol#files li.image-jpeg { background-image: url(../images/icons/image.png); }
+nav#ls ol#files li.image-png { background-image: url(../images/icons/image.png); }
+
+
+nav#ls ol#files li.audio-mpeg { background-image: url(../images/icons/music.png); }

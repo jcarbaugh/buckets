@@ -1,0 +1,23 @@
+<ol id="directories">
+	<li class="new-directory" data-bucket="{{ bucket }}" data-keyprefix="/{{ path }}">
+		Drop here to create a new directory.
+	</li>
+	{% for d in directories %}
+		<li class="directory" data-bucket="{{ bucket }}" data-keyprefix="/{{ d.path }}/">
+			<a href="{% url s3_path bucket d.path %}" class="name">{{ d.name }}</a>
+			<a href="#actions-box" class="actions">actions</a>
+		</li>
+	{% endfor %}
+</ol>
+<ol id="files" data-bucket="{{ bucket }}" data-keyprefix="/{{ path }}">
+	{% if files %}
+		{% for f in files %}
+			<li class="file{% if f.mimetype %} {{ f.mimetype }}{% endif %}">
+				<a href="http://{{ bucket }}.s3.amazonaws.com/{{ f.path }}" class="name">{{ f.name }}</a>
+				<a href="#actions-box" class="actions">actions</a>
+			</li>
+		{% endfor %}
+	{% else %}
+		<li class="no-files">Drop a file here to upload.</li>
+	{% endif %}
+</ol>

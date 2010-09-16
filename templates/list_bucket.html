@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block nav %}
+	<nav>
+		<ol id="pwd" class="cleared">
+			<li class="organization">Sunlight Foundation</li>
+			<li class="bucket"><a href="{% url s3_bucket bucket %}">{{ bucket }}</a></li>
+			{% if path_list %}
+				{% for p in path_list %}
+					{% if forloop.last %}
+						<li class="current">{{ p.name }}</li>
+					{% else %}
+						<li class="path"><a href="{% url s3_path bucket p.path %}">{{ p.name }}</a></li>
+					{% endif %}
+				{% endfor %}
+			{% endif %}
+		</ol>
+	</nav>
+{% endblock %}
+
+{% block content %}
+	<div id="browser">
+		<header>
+			{% if path %}
+				<a href="/s3/{{ bucket }}{% if parent_path %}/{{ parent_path }}{% endif %}/" class="back">return to <em>{{ parent }}</em></a>
+			{% else %}
+				<a href="{% url s3_bucket_list %}" class="back">return to bucket listing</a>
+			{% endif %}
+			<h2>{% if pwd %}{{ pwd }}{% else %}{{ bucket }}{% endif %}</h2>
+		</header>
+		<nav id="ls">
+			{% include "list.html" %}
+		</nav>
+	</div>
+	<div id="options">
+		<form action="." method="post" id="bucket_switcher">
+			<label for="id_bucket">switch bucket to</label>
+			<select name="bucket" id="id_bucket">
+				<option value=""></option>
+				{% for b in buckets %}
+					<option value="{{ b }}"{% if b == bucket %} selected{% endif %}>{{ b }}</option>
+				{% endfor %}
+			</select>
+			<input type="submit" value="switch bucket">
+		</form>
+		<ul id="uploads"></ul>
+	</div>
+{% endblock %}
