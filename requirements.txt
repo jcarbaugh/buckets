@@ -2,3 +2,4 @@ Django==1.2.1
 -e git://github.com/sunlightlabs/django-mediasync.git#egg=mediasync
 boto==2.0b2
 python-openid
+gunicorn
