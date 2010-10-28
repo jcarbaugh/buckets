@@ -47,7 +47,7 @@ var bindUpload = function() {
 				
 				$.ajax({
 					type: 'POST',
-					url: '/s3/' + path,
+					url: '/s3/' + path + '?force',
 					data: {
 						bucket: bucket,
 						key_prefix: keyPrefix,
