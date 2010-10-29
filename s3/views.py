@@ -123,7 +123,7 @@ def upload(request, bucket, key, data):
     b = request.s3.get_bucket(bucket)
     k = Key(bucket=b, name=key)
     
-    if k.exists() and 'force' not in request.args:
+    if k.exists() and 'force' not in request.GET:
         raise ValueError('file exists')
     
     k.set_contents_from_string(data)
