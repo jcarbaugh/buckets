@@ -126,9 +126,14 @@ def upload(request, bucket, key, data):
     if k.exists() and 'force' not in request.GET:
         raise ValueError('file exists')
     
-    k.set_contents_from_string(data)
+    headers = {
+        "x-amz-acl": "public-read",
+        "Content-Length": len(data),
+        "Content-Type": mimetypes.guess_type(key)[0],
+    }
+    
+    k.set_contents_from_string(data, headers=headers)
     k.set_metadata('uploaded-by', request.user.email)
-    k.set_acl('public-read')
     
     if request.is_ajax():
         return HttpResponse('{}')
