@@ -124,7 +124,7 @@ def upload(request, bucket, key, data):
     k = Key(bucket=b, name=key)
     
     if k.exists() and 'force' not in request.GET:
-        raise ValueError('file exists')
+        raise HttpResponseForbidden('write failed: file exists')
     
     headers = {
         "x-amz-acl": "public-read",

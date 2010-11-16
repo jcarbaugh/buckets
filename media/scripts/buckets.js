@@ -1,3 +1,7 @@
+var Buckets = {
+	
+}
+
 var bindUpload = function() {
 	
 	var targets = $("ol#directories li, ol#files");
@@ -45,25 +49,42 @@ var bindUpload = function() {
 			var reader = new FileReader(file);
 			reader.onload = function(e) {
 				
+				var onSuccess = function(resp, status, req) {
+					$('nav#ls').load(window.location.pathname + '?partial', function(){
+						bindUpload();
+						node.addClass('done');
+						setTimeout(function() { node.fadeOut(); }, 5000);
+					});
+				};
+				
+				var uploadData = {
+					bucket: bucket,
+					key_prefix: keyPrefix,
+					filename: file.fileName,
+					data: window.btoa(e.target.result)
+				};
+				
 				$.ajax({
 					type: 'POST',
-					url: '/s3/' + path + '?force',
-					data: {
-						bucket: bucket,
-						key_prefix: keyPrefix,
-						filename: file.fileName,
-						data: window.btoa(e.target.result)
-					},
+					url: '/s3/' + path,
+					data: uploadData,
 					dataType: 'json',
-					success: function(resp, status, req) {				
-						$('nav#ls').load(window.location.pathname + '?partial', function(){
-							bindUpload();
-							node.addClass('done');
-							setTimeout(function() { node.fadeOut(); }, 5000);
-						});
-					},
+					success: onSuccess,
 					error: function(req, status, err) {
-						node.addClass('error');
+						if (confirm('File exists, overwrite?')) {
+							$.ajax({
+								type: 'POST',
+								url: '/s3/' + path + '?force',
+								data: uploadData,
+								dataType: 'json',
+								success: onSuccess,
+								error: function(req, status, err) {
+									node.addClass('error');
+								}
+							});
+						} else {
+							node.fadeOut();
+						}
 					}
 				});
 				
