@@ -11,9 +11,12 @@ var bindUpload = function() {
 	});
 	
 	targets.bind("dragover", function(e) {
-		$(this).addClass('hovered');
+		$(this).filter(function(index) {
+			var node = $(this);
+			var canWrite = (node.attr('data-canwrite') == 'True');
+			return canWrite && (node.attr('class') == 'directory' || node.attr('id') == 'files');
+		}).addClass('hovered');
 		e.preventDefault();
-		
 	});
 	
 	targets.bind("dragleave", function(e) {
@@ -22,7 +25,14 @@ var bindUpload = function() {
 	
 	targets.bind("drop", function(e) {
 		
+		e.preventDefault();
+		
 		var target = $(this);
+		
+		if (target.attr('data-canwrite') != 'True') {
+			return;
+		}
+		
 		target.removeClass('hovered');
 		
 		var bucket = target.attr('data-bucket');
@@ -94,8 +104,6 @@ var bindUpload = function() {
 		} else {
 			alert('Sorry, only single file uploads are allowed. Multiple file support is on the to-do list.');
 		}
-		
-		e.preventDefault();
 		
 	});
 	

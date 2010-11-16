@@ -1,15 +1,17 @@
 <ol id="directories">
-	<li class="new-directory" data-bucket="{{ bucket }}" data-keyprefix="/{{ path }}">
-		Drop here to create a new directory.
-	</li>
+    {% if can_write %}
+    	<li class="new-directory" data-bucket="{{ bucket }}" data-keyprefix="/{{ path }}">
+    		Drop here to create a new directory.
+    	</li>
+	{% endif %}
 	{% for d in directories %}
-		<li class="directory" data-bucket="{{ bucket }}" data-keyprefix="/{{ d.path }}/">
+		<li class="directory" data-bucket="{{ bucket }}" data-keyprefix="/{{ d.path }}/" data-canwrite="{{ d.can_write }}">
 			<a href="{% url s3_path bucket d.path %}" class="name">{{ d.name }}</a>
 			<a href="#actions-box" class="actions">actions</a>
 		</li>
 	{% endfor %}
 </ol>
-<ol id="files" data-bucket="{{ bucket }}" data-keyprefix="/{{ path }}">
+<ol id="files" data-bucket="{{ bucket }}" data-keyprefix="/{{ path }}" data-canwrite="{{ can_write }}">
 	{% if files %}
 		{% for f in files %}
 			<li class="file{% if f.mimetype %} {{ f.mimetype }}{% endif %}">
@@ -18,6 +20,8 @@
 			</li>
 		{% endfor %}
 	{% else %}
-		<li class="no-files">Drop a file here to upload.</li>
+	    {% if can_write %}
+		    <li class="no-files">Drop a file here to upload.</li>
+		{% endif %}
 	{% endif %}
 </ol>

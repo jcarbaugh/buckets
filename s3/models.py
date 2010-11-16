@@ -2,11 +2,6 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
 
-PATH_TYPES = (
-    ('M', 'matches'),
-    ('S', 'starts with'),
-)
-
 class BucketPermission(models.Model):
     user = models.ForeignKey(User, related_name='s3_permissions')
     bucket = models.CharField(max_length=255)
@@ -20,13 +15,14 @@ class BucketPermission(models.Model):
 
 class PathPermission(models.Model):
     bucket_permission = models.ForeignKey(BucketPermission, related_name="paths")
-    type = models.CharField(max_length=1, choices=PATH_TYPES)
     value = models.CharField(max_length=255)
     
+    class Meta:
+        ordering = ('value',)
+    
     def __unicode__(self):
-        return u"%s %s" % (self.type, self.value)
+        return self.value
     
     def save(self):
-        if self.type == 'S':
-            self.value = self.value.lstrip('/')
+        self.value = self.value.strip('/')
         super(PathPermission, self).save()

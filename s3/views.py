@@ -10,35 +10,59 @@ import json
 import mimetypes
 import re
 
-def has_permission(user, bucket, path=None):
+def load_permissions(user):
+    
+    perms = {}
+    bucket_perms = BucketPermission.objects.filter(user=user)
+    for bp in bucket_perms:
+        
+        perms[bp.bucket] = {
+            'tree': {},
+            'full_access': bp.full_access,
+        }
+        
+        for pp in bp.paths.all():
+            node = perms[bp.bucket]['tree']
+            for d in pp.value.split('/'):
+                if d not in node:
+                    node[d] = {}
+                node = node[d]
+            node['*'] = True
+    
+    return perms
+            
+
+def has_permission(user, perms, bucket, path=None):
     
     if user.is_superuser:
         return True
     
-    is_permitted = False
+    can_read = False
+    can_write = False
     
-    try:
-        bp = BucketPermission.objects.get(user=user, bucket=bucket)
-    except BucketPermission.DoesNotExist:
-        return False
+    if bucket not in perms:
+        return (False, False)
     
-    if not path or bp.full_access:
-        return True
+    if not path or perms[bucket]['full_access']:
+        return (True, perms[bucket]['full_access'])
     
-    is_allowed = False
     path = ('' if path is None else path).strip('/')
     
-    for pp in bp.paths.all():
-        if pp.type == 'M':
-            is_allowed = is_allowed or re.match(pp.value, path)
-        elif pp.type == 'S':
-            is_allowed = is_allowed or path.startswith(pp.value)
+    node = perms[bucket]['tree']
+    for d in path.split('/'):
+        node = node.get(d, None)
+        if node is None:
+            return (False, False)
+        elif '*' in node:
+            return (True, True)
+        can_read = True
     
-    return is_allowed
+    return (can_read, can_write)
 
 def load_buckets(request):
     if request.user.is_superuser:
-        buckets = [b.name for b in request.s3.get_all_buckets()]
+        #buckets = [b.name for b in request.s3.get_all_buckets()]
+        buckets = [p.bucket for p in request.user.s3_permissions.all()]
     else:
         buckets = [p.bucket for p in request.user.s3_permissions.all()]
     return buckets
@@ -47,13 +71,17 @@ def load_buckets(request):
 def bucket_list(request):
     buckets = load_buckets(request)
     request.session['buckets'] = buckets
+    request.session['perms'] = load_permissions(request.user)
     return render_to_response('list_buckets.html', {'buckets': buckets},
                               context_instance=RequestContext(request))
 
 @login_required
 def list(request, bucket, path=None):
     
-    if not has_permission(request.user, bucket, path):
+    perms = request.session['perms']
+    
+    (can_read, can_write) = has_permission(request.user, perms, bucket, path)
+    if not can_read:
         return HttpResponseForbidden('%s does not have access to %s/%s' % (request.user.email, bucket, path or '')) 
     
     if 'buckets' not in request.session:
@@ -80,9 +108,12 @@ def list(request, bucket, path=None):
         if l.name != path:
             f = {'name': l.name[pl:], 'path': l.name.strip('/')}
             if isinstance(l, Prefix):
-                if has_permission(request.user, bucket, l.name):
+                (can_subdir_read, can_subdir_write) = has_permission(request.user, perms, bucket, l.name)
+                if can_subdir_read:
+                    f['can_read'] = can_subdir_read
+                    f['can_write'] = can_subdir_write
                     directories.append(f)
-            else:
+            elif can_write:
                 f['mimetype'] = mimetypes.guess_type(f['name'])[0]
                 files.append(f)
     
@@ -101,6 +132,8 @@ def list(request, bucket, path=None):
         'path': path,
         'path_list': path_list,
         'directories': directories,
+        'can_read': can_read,
+        'can_write': can_write,
         'files': files,
         'parent': path_parts[-2] if len(path_parts) > 1 else bucket,
         'parent_path': "/".join(path_parts[:-1]),
@@ -119,6 +152,12 @@ def upload(request, bucket, key, data):
     
     if not key or key.endswith('/'):
         raise ValueError('key required for upload')
+        
+    perms = request.session['perms']
+    (can_read, can_write) = has_permission(request.user, perms, bucket, key)
+    
+    if not can_write:
+        return HttpResponseForbidden('%s does not have access to %s/%s' % (request.user.email, bucket, key or ''))
     
     b = request.s3.get_bucket(bucket)
     k = Key(bucket=b, name=key)
@@ -129,8 +168,11 @@ def upload(request, bucket, key, data):
     headers = {
         "x-amz-acl": "public-read",
         "Content-Length": len(data),
-        "Content-Type": mimetypes.guess_type(key)[0],
     }
+    
+    ct = mimetypes.guess_type(key)[0]
+    if ct is not None:
+        headers["Content-Type"] = ct
     
     k.set_contents_from_string(data, headers=headers)
     k.set_metadata('uploaded-by', request.user.email)

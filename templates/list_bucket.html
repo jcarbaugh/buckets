@@ -3,7 +3,7 @@
 {% block nav %}
 	<nav>
 		<ol id="pwd" class="cleared">
-			<li class="organization">Sunlight Foundation</li>
+			<li class="organization"><a href="/s3/">Sunlight Foundation</a></li>
 			<li class="bucket"><a href="{% url s3_bucket bucket %}">{{ bucket }}</a></li>
 			{% if path_list %}
 				{% for p in path_list %}
