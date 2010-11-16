@@ -11,58 +11,86 @@ import mimetypes
 import re
 
 def load_permissions(user):
+    """ Load permissions from database into data structure.
+    """
     
-    perms = {}
+    perms = {}  # dict to hold permissions
+    
+    # iterate over all bucket permissions for the user
     bucket_perms = BucketPermission.objects.filter(user=user)
     for bp in bucket_perms:
         
+        # dict to hold bucket-specific permissions
+        # full_access == True gives read/write access to entire bucket
         perms[bp.bucket] = {
             'tree': {},
             'full_access': bp.full_access,
         }
         
+        # iterate over the user/bucket path permissions
         for pp in bp.paths.all():
+            
             node = perms[bp.bucket]['tree']
+            
+            # iterate over parts of the permission path
             for d in pp.value.split('/'):
+                # add current part to tree
                 if d not in node:
                     node[d] = {}
                 node = node[d]
+            
+            # add * at end of path to indicate end of permission
             node['*'] = True
     
     return perms
             
 
 def has_permission(user, perms, bucket, path=None):
+    """ Test to see if a user has permission to access a bucket
+        and or an associate path on the bucket.
+    """
     
+    # superusers have read/write access to everything
     if user.is_superuser:
-        return True
-    
-    can_read = False
-    can_write = False
-    
+        return (True, True)
+
+    # no access if bucket is not in list of permissions
     if bucket not in perms:
         return (False, False)
     
+    # If path is not specified, allow read_access since we've already
+    # established that the user has bucket permission. Allow write
+    # access only if user has full_access permission set.
     if not path or perms[bucket]['full_access']:
         return (True, perms[bucket]['full_access'])
     
+    # make path safe and standardized
     path = ('' if path is None else path).strip('/')
     
+    # get bucket's permission tree
     node = perms[bucket]['tree']
-    for d in path.split('/'):
-        node = node.get(d, None)
-        if node is None:
-            return (False, False)
-        elif '*' in node:
-            return (True, True)
-        can_read = True
     
-    return (can_read, can_write)
+    # iterate over parts of current path
+    for d in path.split('/'):
+        
+        # test to see if part is in permission tree
+        node = node.get(d, None)
+        
+        if node is None:
+            # no read/write access if current path is not in tree
+            return (False, False)
+            
+        if '*' in node:
+            # allow read/write if we've reached a full permission path
+            return (True, True)
+    
+    # If we've gotten this far then we have permission on a subdirectory
+    # of the current directory. Allow reads but no writes.
+    return (True, False)
 
 def load_buckets(request):
     if request.user.is_superuser:
-        #buckets = [b.name for b in request.s3.get_all_buckets()]
-        buckets = [p.bucket for p in request.user.s3_permissions.all()]
+        buckets = [b.name for b in request.s3.get_all_buckets()]
     else:
         buckets = [p.bucket for p in request.user.s3_permissions.all()]
     return buckets
