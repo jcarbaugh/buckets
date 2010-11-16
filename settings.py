@@ -92,9 +92,6 @@ INSTALLED_APPS = (
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
 
-GOOGLEAUTH_DOMAIN = 'sunlightfoundation.com'
-GOOGLEAUTH_REALM = '10.13.37.20:8000'
-
 try:
     from local_settings import *
 except ImportError:
