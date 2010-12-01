@@ -14,7 +14,7 @@ var bindUpload = function() {
 		$(this).filter(function(index) {
 			var node = $(this);
 			var canWrite = (node.attr('data-canwrite') == 'True');
-			return canWrite && (node.attr('class') == 'directory' || node.attr('id') == 'files');
+			return canWrite && (node.attr('class') == 'directory' || node.attr('class') == 'new-directory' || node.attr('id') == 'files');
 		}).addClass('hovered');
 		e.preventDefault();
 	});
@@ -41,6 +41,7 @@ var bindUpload = function() {
 		var dir;
 		if (target.hasClass('new-directory')) {
 			dir = prompt('Directory name');
+			if (dir == null) return;
 		}
 		
 		var data = e.originalEvent.dataTransfer;
