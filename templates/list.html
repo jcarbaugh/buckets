@@ -1,6 +1,6 @@
 <ol id="directories">
     {% if can_write %}
-    	<li class="new-directory" data-bucket="{{ bucket }}" data-keyprefix="/{{ path }}">
+    	<li class="new-directory" data-bucket="{{ bucket }}" data-keyprefix="/{{ path }}" data-canwrite="True">
     		Drop here to create a new directory.
     	</li>
 	{% endif %}
