@@ -49,12 +49,13 @@ var bindUpload = function() {
 		if (data.files.length == 1) {
 			
 			var file = data.files[0];
+			var fileName = file.fileName || file.name;
 			var path = bucket + keyPrefix;
 			if (dir) {
 				path += dir + '/';
 			}
 			
-			var node = $('<li><h3>' + file.fileName + '</h3><p>' + path  + '</p></li>');
+			var node = $('<li><h3>' + fileName + '</h3><p>' + path  + '</p></li>');
 			$('#uploads').append(node);
 						
 			var reader = new FileReader(file);
@@ -71,7 +72,7 @@ var bindUpload = function() {
 				var uploadData = {
 					bucket: bucket,
 					key_prefix: keyPrefix,
-					filename: file.fileName || file.name,
+					filename: fileName,
 					data: window.btoa(e.target.result)
 				};
 				
