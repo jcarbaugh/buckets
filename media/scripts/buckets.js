@@ -71,7 +71,7 @@ var bindUpload = function() {
 				var uploadData = {
 					bucket: bucket,
 					key_prefix: keyPrefix,
-					filename: file.fileName,
+					filename: file.fileName || file.name,
 					data: window.btoa(e.target.result)
 				};
 				
