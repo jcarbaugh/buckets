@@ -8,7 +8,7 @@
 			<ol id="directories">
 				{% for b in buckets %}
 					<li class="directory" data-bucket="{{ b }}" data-keyprefix="/">
-						<a href="{% url s3_bucket b %}" class="name">{{ b }}</a>
+						<a href="{% url 's3_bucket' b %}" class="name">{{ b }}</a>
 					</li>
 				{% endfor %}
 			</ol>

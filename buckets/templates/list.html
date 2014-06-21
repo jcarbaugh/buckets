@@ -6,7 +6,7 @@
 	{% endif %}
 	{% for d in directories %}
 		<li class="directory" data-bucket="{{ bucket }}" data-keyprefix="/{{ d.path }}/" data-canwrite="{{ d.can_write }}">
-			<a href="{% url s3_path bucket d.path %}" class="name">{{ d.name }}</a>
+			<a href="{% url 's3_path' bucket d.path %}" class="name">{{ d.name }}</a>
 			<a href="#actions-box" class="actions">actions</a>
 		</li>
 	{% endfor %}
@@ -25,3 +25,6 @@
 		{% endif %}
 	{% endif %}
 </ol>
+<form action="." id="upload-form">
+	{% csrf_token %}
+</form>

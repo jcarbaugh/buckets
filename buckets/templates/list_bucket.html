@@ -4,13 +4,13 @@
 	<nav>
 		<ol id="pwd" class="cleared">
 			<li class="organization"><a href="/s3/">Buckets</a></li>
-			<li class="bucket"><a href="{% url s3_bucket bucket %}">{{ bucket }}</a></li>
+			<li class="bucket"><a href="{% url 's3_bucket' bucket %}">{{ bucket }}</a></li>
 			{% if path_list %}
 				{% for p in path_list %}
 					{% if forloop.last %}
 						<li class="current">{{ p.name }}</li>
 					{% else %}
-						<li class="path"><a href="{% url s3_path bucket p.path %}">{{ p.name }}</a></li>
+						<li class="path"><a href="{% url 's3_path' bucket p.path %}">{{ p.name }}</a></li>
 					{% endif %}
 				{% endfor %}
 			{% endif %}
@@ -24,7 +24,7 @@
 			{% if path %}
 				<a href="/s3/{{ bucket }}{% if parent_path %}/{{ parent_path }}{% endif %}/" class="back">return to <em>{{ parent }}</em></a>
 			{% else %}
-				<a href="{% url s3_bucket_list %}" class="back">return to bucket listing</a>
+				<a href="{% url 's3_bucket_list' %}" class="back">return to bucket listing</a>
 			{% endif %}
 			<h2>{% if pwd %}{{ pwd }}{% else %}{{ bucket }}{% endif %}</h2>
 		</header>

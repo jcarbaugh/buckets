@@ -1,5 +1,7 @@
-Django==1.2.3
-django-mediasync==2.0.0
-python-openid
--e git://github.com/jcarbaugh/django-googleauth.git#egg=googleauth
+boto==2.29.1
+Django==1.6.5
 gunicorn
+requests==2.3.0
+South==0.8.4
+whitenoise==1.0.3
+-e git://github.com/jcarbaugh/django-googleauth.git#egg=googleauth

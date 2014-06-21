@@ -1,14 +1,13 @@
 <!DOCTYPE html>
-{% load media %}
 <html>
 	<head>
 		<meta charset="utf-8" />
 		<title>buckets</title>
-		{% css "styles/reset.css" %}
-		{% css "styles/text.css" %}
-		{% css "styles/960.css" %}
-		{% css "styles/screen.css" %}
-		{% css "styles/jquery.fancybox-1.3.1.css" %}
+		<link rel="stylesheet" href="/static/styles/reset.css">
+		<link rel="stylesheet" href="/static/styles/text.css">
+		<link rel="stylesheet" href="/static/styles/960.css">
+		<link rel="stylesheet" href="/static/styles/screen.css">
+		<link rel="stylesheet" href="/static/styles/jquery.fancybox-1.3.1.css">
 	</head>
 	<body class="{% block bodyclass %}{% endblock %}">
 		<div id="container">
@@ -34,9 +33,9 @@
 				</div>
 			</div>
 		</div>
-		{% js "scripts/jquery-1.4.2.min.js" %}
-		{% js "scripts/jquery.mousewheel-3.0.2.pack.js" %}
-		{% js "scripts/jquery.fancybox-1.3.1.pack.js" %}
-		{% js "scripts/buckets.js" %}
+		<script src="/static/scripts/jquery-1.4.2.min.js"></script>
+		<script src="/static/scripts/jquery.mousewheel-3.0.2.pack.js"></script>
+		<script src="/static/scripts/jquery.fancybox-1.3.1.pack.js"></script>
+		<script src="/static/scripts/buckets.js"></script>
 	</body>
 </html>
