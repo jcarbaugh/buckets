@@ -1,5 +1,5 @@
 *.db
 *.pyc
 .DS_Store
-dist/
 local_settings.py
+static_root/
