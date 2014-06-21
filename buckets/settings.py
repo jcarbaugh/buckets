@@ -27,6 +27,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'googleauth',
+    'gunicorn',
     'south',
     'buckets',
     'buckets.s3',
